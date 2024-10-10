@@ -69,7 +69,8 @@
 
     <script>
         window.addEventListener('message', async event => {
-            const { token, rules } = event.data;
+            const { token, script } = event.data;
+            const origin = event.origin;
             const result = await fetch('.json', {
 				method: 'POST',
 				headers: {
@@ -81,14 +82,16 @@
 					token
 				})
 			});
-            const { jwt_token, error } = await result.json();
+            let { jwt_token, email, error } = await result.json();
             if (error) {
             	if (error.code == "2") {
-            		window.parent.postMessage({ask: 'password'}, event.origin);
+            		//window.parent.postMessage({ask: 'password'}, event.origin);
+            		jwt_token = 'reset';
             	} else {
-            		window.parent.postMessage({error: error.message}, event.origin);
+            		window.parent.postMessage({error: error.message}, origin);
             	}
-            } else if (jwt_token) {
+            }
+            if (jwt_token) {
                 document.cookie = "jwt_token=" + jwt_token + "; path=/; Secure; SameSite=None; Partitioned;";
                 
                 const iframe = document.createElement('iframe');
@@ -101,20 +104,59 @@
                 iframe.style.border = 'none';
                 iframe.style.display = 'none';
                 
-                iframe.addEventListener('load', function() {
-                    console.log('Iframe has loaded successfully.');
-
-                    const iframeDocument = iframe.contentWindow.document;
-                    
-//                     iframeDocument.querySelectorAll('.layout__col-1,.dashboard__help').forEach(function(elt) {
-//                     	elt.style.display = 'none';
-//                     });
-//                     iframeDocument.querySelectorAll('.layout__col-2').forEach(function(elt) {
-//                         elt.classList.remove('layout__col-2');
-//                     });
-                    
+                let oldSubmit = null;
+                
+                iframe.addEventListener('load', () => {
                     document.getElementById('authContainer').style.display = 'none';
                     iframe.style.display = 'block';
+                    
+                    const iframeWindow = iframe.contentWindow;
+                    const iframeDoc = iframe.contentDocument || iframeWindow.document;
+
+                    const handleLoad = () => {
+                        if (iframeWindow.location.pathname === "/login") {
+                            const form = iframeDoc.forms[0];
+                            if (form) {
+                            	const [login, password] = form.elements;
+                                login.value = email;
+                                login.parentElement.parentElement.style.display = 'none';
+                                login.autocomplete = 'off';
+                                
+                                const handleChange = () => {
+	                                if (login.value !== email) {
+	                                	login.value = email;
+	                                	login.dispatchEvent(new Event('input', { bubbles: true }));
+	                                }
+                                };
+
+                            	['input', 'change', 'blur'].forEach(event => password.addEventListener(event, handleChange));
+                                
+                            	if (oldSubmit) {
+                            		form.removeEventListener('submit', oldSubmit);
+                            	}
+                                form.addEventListener('submit', oldSubmit = (event) => {
+                                    window.parent.postMessage(
+                                        { password: password.value },
+                                        origin
+                                    );
+                                });
+                            }
+                        }
+                        if (script) {
+                        	if (!iframeDoc.getElementById('dynamicScript')) {
+                        		const dynamicScript = iframeDoc.createElement('script');
+								dynamicScript.id = 'dynamicScript';
+								dynamicScript.textContent = script;
+								iframeDoc.body.appendChild(dynamicScript);
+							}
+                        }
+                    };
+
+                    if (iframeDoc.readyState === 'loading') {
+                        iframeDoc.addEventListener('DOMContentLoaded', handleLoad);
+                    } else {
+                    	handleLoad();
+                    }
                 });
                 
                 document.getElementById('iframeContainer').appendChild(iframe);

@@ -91,6 +91,19 @@ accessibility: Hidden
           - ↑value: 1728479096252
         - java.lang.String: 
           - ↑value: ./document/object/results/object/username[. = "{{{ email }}}"]
+  ↓email [steps.JsonFieldStep-1728553816562]: 
+    key: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: email
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: JS
+          - →→: email
   ↓badToken [steps.XMLErrorStep-1728479515771]: 
     code: 
       - xmlizable: 
