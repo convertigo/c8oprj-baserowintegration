@@ -1,0 +1,139 @@
+accessibility: Hidden
+↓Init [steps.SimpleStep-1728477159624]: 
+  expression: |
+    'let bad = false;
+    try {
+    	const unciphered = com.twinsoft.convertigo.engine.util.Crypto2.decodeFromHexString(token);
+    	const {email, password, ts} = JSON.parse(unciphered);
+    	const now = new Date().getTime();
+    	const search = email;
+    	
+    	bad = !email || !password || ts > now || ts < (now - 5 * 60 * 1000);
+    } catch (e) {
+    	bad = true;
+    }'
+↓jIf [steps.IfStep-1728477560008]: 
+  condition: bad
+  ↓badToken [steps.XMLErrorStep-1728477703134]: 
+    code: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: 1
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: bad token
+  ↓Remove_session [steps.RemoveSessionStep-1728486998435]: 
+  ↓Return [steps.ReturnStep-1728477733885]: 
+↓Call_Transaction [steps.TransactionStep-1728478836864]: 
+  sourceTransaction: BaserowIntegration.Baserow._api_user_token_auth__POST
+  ↓email [variables.StepVariable-1728478836866]: 
+  ↓password [variables.StepVariable-1728478836868]: 
+↓ifSuccess [steps.IfExistStep-1728478865044]: 
+  condition: ifSuccess
+  sourceDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1728478836864
+        - java.lang.String: 
+          - ↑value: ./document/object/refresh_token/text()
+  ↓token [steps.JsonFieldStep-1728478887074]: 
+    key: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: jwt_token
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: SOURCE
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: 1728478836864
+            - java.lang.String: 
+              - ↑value: ./document/object/refresh_token/text()
+  ↓Remove_session [steps.RemoveSessionStep-1728487011963]: 
+  ↓Return [steps.ReturnStep-1728478913653]: 
+↓Call_Sequence [steps.SequenceStep-1728479006357]: 
+  sourceSequence: lib_BaseRow.TokenGetOrRefresh
+↓__header_Authorization [steps.SimpleSourceStep-1728479006360]: 
+  sourceDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1728479006357
+        - java.lang.String: 
+          - ↑value: ./document/Bearer/text()
+  variableName: __header_Authorization
+↓Call_Transaction1 [steps.TransactionStep-1728479096252]: 
+  sourceTransaction: BaserowIntegration.Baserow._api_admin_users__GET
+  ↓__header_Authorization [variables.StepVariable-1728479096254]: 
+    comment: Defines which page should be returned.
+    description: page
+  ↓search [variables.StepVariable-1728479096256]: 
+    comment: If provided only users that match the query will be returned.
+    description: search
+↓IfExist [steps.IfExistStep-1728479475758]: 
+  sourceDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1728479096252
+        - java.lang.String: 
+          - ↑value: ./document/object/results/object/username[. = "{{{ email }}}"]
+  ↓badToken [steps.XMLErrorStep-1728479515771]: 
+    code: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: 2
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: bad password
+  ↓Remove_session [steps.RemoveSessionStep-1728487018433]: 
+  ↓Return [steps.ReturnStep-1728479668505]: 
+↓Call_Transaction3 [steps.TransactionStep-1728480437278]: 
+  isEnabled: false
+  output: true
+  sourceTransaction: BaserowIntegration.Baserow._api_settings__GET
+  ↓__header_Authorization [variables.StepVariable-1728480463021]: 
+    comment: Defines which page should be returned.
+    description: page
+↓Call_Transaction2 [steps.TransactionStep-1728480114479]: 
+  isEnabled: false
+  output: true
+  sourceTransaction: BaserowIntegration.Baserow._api_settings_update__PATCH
+  ↓allow_new_signups [variables.StepVariable-1728480114481]: 
+    value: true
+  ↓__header_Authorization [variables.StepVariable-1728480144491]: 
+    comment: Defines which page should be returned.
+    description: page
+↓badToken [steps.XMLErrorStep-1728480926362]: 
+  code: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: 3
+  message: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: account creation not supported
+↓Remove_session [steps.RemoveSessionStep-1728487026180]: 
+↓token [variables.RequestableVariable-1728477060080]: 

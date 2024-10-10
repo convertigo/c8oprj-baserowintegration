@@ -1,0 +1,23 @@
+accessibility: Private
+↓addTs [steps.SimpleStep-1728478093501]: 
+  expression: |
+    'try {
+    	let json = JSON.parse(value);
+    	json.ts = new Date().getTime();
+    	value = JSON.stringify(json);
+    } catch (e) {}'
+↓ciphered [steps.JsonFieldStep-1728477331725]: 
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: ciphered
+  value: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: com.twinsoft.convertigo.engine.util.Crypto2.encodeToHexString(value)
+↓value [variables.RequestableVariable-1728477316211]: 
+  value: '{"email": "bob@alice.com", "password": "azerty"}'

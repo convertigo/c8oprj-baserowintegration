@@ -4,5 +4,9 @@
   contextTimeout: 59
   corsOrigin: =Origin
   httpSessionTimeout: 60
-  ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
-  ↓NewSequence [sequences.GenericSequence]: 🗏 sequences/NewSequence.yaml
+  version: 0.0.5
+  ↓Baserow [connectors.HttpConnector-1728478461051]: 🗏 connectors/Baserow.yaml
+  ↓CheckLogin [sequences.GenericSequence]: 🗏 sequences/CheckLogin.yaml
+  ↓Cipher [sequences.GenericSequence-1728477305632]: 🗏 sequences/Cipher.yaml
+  ↓lib_BaseRow [references.ProjectSchemaReference]: 
+    projectName: lib_BaseRow

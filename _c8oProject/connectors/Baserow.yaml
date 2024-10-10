@@ -1,0 +1,122 @@
+↑default: true
+baseDir: 
+https: ${lib_baserow.https=true}
+port: ${lib_baserow.port=443}
+server: ${lib_baserow.server=baserow-backend.convertigo.net}
+↓_api_admin_users__GET [transactions.JsonHttpTransaction]: 
+  comment: |
+    Returns all users with detailed information on each user, if the requesting user is staff. 
+    
+    This is a **premium** feature.
+  httpInfo: true
+  httpParameters: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Accept
+            - java.lang.String: 
+              - ↑value: application/json
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Content-Type
+            - java.lang.String: 
+              - ↑value: application/x-www-form-urlencoded
+  subDir: /api/admin/users/
+  ↓page [variables.RequestableHttpVariable-1728479076788]: 
+    comment: Defines which page should be returned.
+    description: page
+    httpName: page
+  ↓search [variables.RequestableHttpVariable-1728479076791]: 
+    comment: If provided only users that match the query will be returned.
+    description: search
+    httpName: search
+  ↓size [variables.RequestableHttpVariable-1728479076794]: 
+    comment: Defines how many users should be returned per page.
+    description: size
+    httpName: size
+  ↓sorts [variables.RequestableHttpVariable-1728479076797]: 
+    comment: 'A comma separated string of attributes to sort by, each attribute must be prefixed with `+` for a descending sort or a `-` for an ascending sort. The accepted attribute names are: id, is_active, name, username, date_joined, last_login. For example `sorts=-id,-is_active` will sort the users first by descending id and then ascending is_active. A sortparameter with multiple instances of the same sort attribute will respond with the ERROR_ADMIN_LISTING_INVALID_SORT_ATTRIBUTE error.'
+    description: sorts
+    httpName: sorts
+↓_api_settings__GET [transactions.JsonHttpTransaction]: 
+  comment: Responds with all the admin configured settings.
+  httpInfo: true
+  httpParameters: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Accept
+            - java.lang.String: 
+              - ↑value: application/json
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Content-Type
+            - java.lang.String: 
+              - ↑value: application/x-www-form-urlencoded
+  subDir: /api/settings/
+↓_api_settings_update__PATCH [transactions.JsonHttpTransaction]: 
+  comment: Updates the admin configured settings if the user has admin permissions.
+  customHttpVerb: PATCH
+  httpInfo: true
+  httpParameters: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Accept
+            - java.lang.String: 
+              - ↑value: application/json
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Content-Type
+            - java.lang.String: 
+              - ↑value: application/x-www-form-urlencoded
+  httpVerb: PUT
+  subDir: /api/settings/update/
+  ↓allow_new_signups [variables.RequestableHttpVariable-1728480002874]: 
+    httpMethod: POST
+↓_api_user_token_auth__POST [transactions.JsonHttpTransaction]: 
+  ↑default: true
+  comment: Authenticates an existing user based on their username, which is their email address, and their password. If successful a JWT token will be generated that can be used to authorize for other endpoints that require authorization. The token will be valid for 60 minutes, so it has to be refreshed using the **token_refresh** endpoint before that time.
+  httpInfo: true
+  httpParameters: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Accept
+            - java.lang.String: 
+              - ↑value: application/json
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: Content-Type
+            - java.lang.String: 
+              - ↑value: application/x-www-form-urlencoded
+  httpVerb: POST
+  subDir: /api/user/token-auth/
+  ↓email [variables.RequestableHttpVariable-1728478556511]: 
+    httpMethod: POST
+  ↓password [variables.RequestableHttpVariable-1728478563045]: 
+    httpMethod: POST
