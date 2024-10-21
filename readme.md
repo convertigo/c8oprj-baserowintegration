@@ -27,13 +27,13 @@ For more technical informations : [documentation](./project.md)
      <tr><td>To contribute</td><td>
 
      ```
-     BaserowIntegration=/Users/nicolas/dev/convertigo/runtime-ConvertigoStudio/BaserowIntegration/.git:branch=master
+     BaserowIntegration=git@github.com:convertigo/c8oprj-baserowintegration.git:branch=master
      ```
      </td></tr>
      <tr><td>To simply use</td><td>
 
      ```
-     BaserowIntegration=/Users/nicolas/dev/convertigo/runtime-ConvertigoStudio/BaserowIntegration//archive/master.zip
+     BaserowIntegration=git@github.com:convertigo/c8oprj-baserowintegration/archive/master.zip
      ```
      </td></tr>
     </table>
