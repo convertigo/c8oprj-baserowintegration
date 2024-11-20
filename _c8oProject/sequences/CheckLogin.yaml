@@ -8,7 +8,7 @@ accessibility: Hidden
     	const now = new Date().getTime();
     	const search = email;
     	
-    	bad = !email || !password || ts > now || ts < (now - 5 * 60 * 1000);
+    	bad = !email || !password || ts > (now + 5 * 60 * 1000) || ts < (now - 5 * 60 * 1000);
     } catch (e) {
     	bad = true;
     }'
