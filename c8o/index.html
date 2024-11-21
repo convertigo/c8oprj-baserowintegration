@@ -66,13 +66,40 @@
     </div>
 
     <div id="iframeContainer"></div>
-
+    <script id="_script">
+if(false){
+function _clean() {
+    document.querySelectorAll(`${[
+        '.auth__logo',
+        '.dashboard__footer',
+        '.dashboard__help',
+        '.sidebar__user',
+        '.sidebar__foot',
+        '.context__menu-item:has(.iconoir-settings)',
+        '.tree__item:has(.baserow-icon-application, .iconoir-lock)',
+        '.dashboard__sidebar-group:has(.fa-sign-out-alt)',
+        '.dashboard__resources',
+        '.context__menu-item:has(.baserow-icon-application)',
+        '.alert:has(.baserow-icon-gitlab)'
+    ].join(',')}`).forEach(it => it.remove());
+    document.querySelectorAll('.tree__heading').forEach(it => {
+        if (it.textContent.toLowerCase().includes('applications')) {
+            it.parentElement.remove();
+        }
+    });
+}
+_clean();
+const _observer = new MutationObserver(_clean);
+_observer.observe(document.body, {subtree: true, childList: true});
+}
+    </script>
     <script>
         window.addEventListener('message', async event => {
-            const { token, script } = event.data;
+            let { token, script } = event.data;
             if (!token) {
                 return;
             }
+            script = document.getElementById('_script').textContent.replace('if(false){', 'if(true){');// + (script ? script : '');
             const origin = event.origin;
             const result = await fetch('.json', {
                 method: 'POST',
