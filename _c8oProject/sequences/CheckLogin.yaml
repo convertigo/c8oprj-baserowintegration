@@ -7,6 +7,8 @@ accessibility: Hidden
     	const {email, password, ts} = JSON.parse(unciphered);
     	const now = new Date().getTime();
     	const search = email;
+    	const username = email;
+    	const name = email;
     	
     	bad = !email || !password || ts > (now + 5 * 60 * 1000) || ts < (now - 5 * 60 * 1000);
     } catch (e) {
@@ -119,34 +121,101 @@ accessibility: Hidden
           - →→: bad password
   ↓Remove_session [steps.RemoveSessionStep-1728487018433]: 
   ↓Return [steps.ReturnStep-1728479668505]: 
-↓Call_Transaction3 [steps.TransactionStep-1728480437278]: 
-  isEnabled: false
-  output: true
-  sourceTransaction: BaserowIntegration.Baserow._api_settings__GET
-  ↓__header_Authorization [variables.StepVariable-1728480463021]: 
-    comment: Defines which page should be returned.
-    description: page
-↓Call_Transaction2 [steps.TransactionStep-1728480114479]: 
-  isEnabled: false
-  output: true
-  sourceTransaction: BaserowIntegration.Baserow._api_settings_update__PATCH
-  ↓allow_new_signups [variables.StepVariable-1728480114481]: 
+↓Call_Transaction4 [steps.TransactionStep-1732284374039]: 
+  sourceTransaction: lib_BaseRow.Baserow_API_spec._api_admin_users__POST
+  ↓username [variables.StepVariable-1732284374041]: 
+    description: username
+    required: true
+  ↓name [variables.StepVariable-1732284374043]: 
+    description: name
+    required: true
+  ↓is_active [variables.StepVariable-1732284374045]: 
+    comment: Designates whether this user should be treated as active. Set this to false instead of deleting accounts.
+    description: is_active
     value: true
-  ↓__header_Authorization [variables.StepVariable-1728480144491]: 
+  ↓is_staff [variables.StepVariable-1732284374047]: 
+    comment: Designates whether this user is an admin and has access to all workspaces and Baserow's admin areas. 
+    description: is_staff
+    value: false
+  ↓password [variables.StepVariable-1732284374049]: 
+    description: password
+    required: true
+  ↓__header_Authorization [variables.StepVariable-1732284944727]: 
     comment: Defines which page should be returned.
     description: page
-↓badToken [steps.XMLErrorStep-1728480926362]: 
-  code: 
+↓Call_Transaction2 [steps.TransactionStep-1732285119678]: 
+  sourceTransaction: BaserowIntegration.Baserow._api_user_token_auth__POST
+  ↓email [variables.StepVariable-1732285119681]: 
+  ↓password [variables.StepVariable-1732285119684]: 
+↓ifSuccess1 [steps.IfExistThenElseStep-1732285166574]: 
+  condition: ifSuccess1
+  sourceDefinition: 
     - xmlizable: 
-      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-      - SmartType: 
-        - ↑mode: PLAIN
-        - →→: 3
-  message: 
-    - xmlizable: 
-      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-      - SmartType: 
-        - ↑mode: PLAIN
-        - →→: account creation not supported
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1732285119678
+        - java.lang.String: 
+          - ↑value: ./document/object/refresh_token/text()
+  ↓jThen [steps.ThenStep-1732285166576]: 
+    ↓name [steps.ElementStep-1732286478216]: 
+      expression: '"Convertigo NoCode Databases - " + email'
+      nodeName: name
+      output: false
+    ↓Call_Transaction3 [steps.TransactionStep-1732286411923]: 
+      comment: add group
+      sourceTransaction: lib_BaseRow.Baserow_API_spec._api_workspaces__POST
+      ↓__header_Authorization [variables.StepVariable-1732286411926]: 
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1732285119678
+              - java.lang.String: 
+                - ↑value: concat("JWT ",./document/object/access_token/text())
+      ↓name [variables.StepVariable-1732286411929]: 
+        description: name
+        required: true
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1732286478216
+              - java.lang.String: 
+                - ↑value: ./text()
+        value: 
+    ↓token [steps.JsonFieldStep-1732285119690]: 
+      key: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: jwt_token
+      value: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: SOURCE
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1732285119678
+              - java.lang.String: 
+                - ↑value: ./document/object/refresh_token/text()
+  ↓jElse [steps.ElseStep-1732285166578]: 
+    ↓badToken [steps.XMLErrorStep-1728480926362]: 
+      code: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: 4
+      message: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: account creation failed, please contact the support
 ↓Remove_session [steps.RemoveSessionStep-1728487026180]: 
 ↓token [variables.RequestableVariable-1728477060080]: 
