@@ -35,6 +35,19 @@ accessibility: Hidden
   sourceTransaction: BaserowIntegration.Baserow._api_user_token_auth__POST
   ↓email [variables.StepVariable-1728478836866]: 
   ↓password [variables.StepVariable-1728478836868]: 
+↓email [steps.JsonFieldStep-1728553816562]: 
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: email
+  value: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: email
 ↓ifSuccess [steps.IfExistStep-1728478865044]: 
   condition: ifSuccess
   sourceDefinition: 
@@ -93,19 +106,6 @@ accessibility: Hidden
           - ↑value: 1728479096252
         - java.lang.String: 
           - ↑value: ./document/object/results/object/username[. = "{{{ email }}}"]
-  ↓email [steps.JsonFieldStep-1728553816562]: 
-    key: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-        - SmartType: 
-          - ↑mode: PLAIN
-          - →→: email
-    value: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-        - SmartType: 
-          - ↑mode: JS
-          - →→: email
   ↓badToken [steps.XMLErrorStep-1728479515771]: 
     code: 
       - xmlizable: 

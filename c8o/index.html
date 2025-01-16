@@ -101,6 +101,8 @@ _observer.observe(document.body, {subtree: true, childList: true});
             }
             script = document.getElementById('_script').textContent.replace('if(false){', 'if(true){');// + (script ? script : '');
             const origin = event.origin;
+            const sameOrigin = origin == location.origin;
+            const secure = location.origin.startsWith('https://');
             const result = await fetch('.json', {
                 method: 'POST',
                 headers: {
@@ -122,7 +124,7 @@ _observer.observe(document.body, {subtree: true, childList: true});
                 }
             }
             if (jwt_token) {
-                document.cookie = "jwt_token=" + jwt_token + "; path=/; Secure; SameSite=None; Partitioned;";
+                document.cookie = `jwt_token=${jwt_token}; path=/;${secure ?' Secure;':''} SameSite=${secure ? 'None' : 'Lax'};{sameOrigin ? '' : ' Partitioned;'}`;
                 
                 const iframe = document.createElement('iframe');
                 iframe.src = "/";
