@@ -127,7 +127,7 @@ _observer.observe(document.body, {subtree: true, childList: true});
                 document.cookie = `jwt_token=${jwt_token}; path=/;${secure ?' Secure;':''} SameSite=${secure ? 'None' : 'Lax'};{sameOrigin ? '' : ' Partitioned;'}`;
                 
                 const iframe = document.createElement('iframe');
-                iframe.src = "/";
+                iframe.src = "/dashboard/";
                 iframe.style.position = 'absolute';
                 iframe.style.top = '0';
                 iframe.style.left = '0';

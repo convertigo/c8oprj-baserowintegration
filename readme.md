@@ -12,6 +12,7 @@ For more technical informations : [documentation](./project.md)
 - [Sequences](#sequences)
     - [CheckLogin](#checklogin)
     - [Cipher](#cipher)
+    - [Decipher](#decipher)
 
 
 ## Installation
@@ -56,6 +57,19 @@ For more technical informations : [documentation](./project.md)
 </table>
 
 ### Cipher
+
+**variables**
+
+<table>
+<tr>
+<th>name</th><th>comment</th>
+</tr>
+<tr>
+<td>value</td><td></td>
+</tr>
+</table>
+
+### Decipher
 
 **variables**
 

@@ -1,0 +1,15 @@
+accessibility: Private
+↓deciphered [steps.JsonFieldStep-1737043149532]: 
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: deciphered
+  value: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: com.twinsoft.convertigo.engine.util.Crypto2.decodeFromHexString(value)
+↓value [variables.RequestableVariable-1737043149535]: 
