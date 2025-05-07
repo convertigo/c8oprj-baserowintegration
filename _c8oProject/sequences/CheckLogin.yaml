@@ -4,7 +4,7 @@ accessibility: Hidden
     'let bad = false;
     try {
     	const unciphered = com.twinsoft.convertigo.engine.util.Crypto2.decodeFromHexString(token);
-    	const {email, password, ts} = JSON.parse(unciphered);
+    	var {email, password, ts} = JSON.parse(unciphered);
     	const now = new Date().getTime();
     	email = email.toLowerCase();
     	const search = email;
