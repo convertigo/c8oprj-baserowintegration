@@ -75,12 +75,18 @@ function _clean() {
         '.dashboard__help',
         '.sidebar__user',
         '.sidebar__foot',
-        '.context__menu-item:has(.iconoir-settings)',
+        '.context__menu-item:has(.iconoir-settings, .iconoir-lock)',
         '.tree__item:has(.baserow-icon-application, .iconoir-lock)',
+        'li:has(.choice-items__link .iconoir-lock)',
         '.dashboard__sidebar-group:has(.fa-sign-out-alt)',
         '.dashboard__resources',
         '.context__menu-item:has(.baserow-icon-application)',
-        '.alert:has(.baserow-icon-gitlab)'
+        '.tabs__item:has(.iconoir-lock)',
+        'li.select__item:has(.iconoir-lock)',
+        '.alert:has(.baserow-icon-gitlab)',
+        'li.header__filter-item:has(.iconoir-palette)',
+        '.select__footer-create-link:has(.iconoir-lock)',
+        'div.radio:has(.iconoir-lock)'
     ].join(',')}`).forEach(it => it.remove());
     document.querySelectorAll('.tree__heading').forEach(it => {
         if (it.textContent.toLowerCase().includes('applications')) {

@@ -9,7 +9,7 @@ Mashup Sequencer project
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/references/images/ProjectSchemaReference_16x16.png?raw=true "ProjectSchemaReference") lib_BaseRow
 
 
-see [readme](https://github.com/convertigo/c8oprj-lib-baserow/tree/ec3ac68a25f448a4b264582dd217f54a34f060cc#readme)
+see [readme](https://github.com/convertigo/c8oprj-lib-baserow/tree/8.4.x#readme)
 </p></blockquote></details>
 
 <details><summary><span style="color:DarkGoldenRod"><i>Connectors</i></span></summary><blockquote><p>
