@@ -86,6 +86,7 @@ function _clean() {
         '.alert:has(.baserow-icon-gitlab)',
         'li.header__filter-item:has(.iconoir-palette)',
         '.select__footer-create-link:has(.iconoir-lock)',
+        '.view-sharing__option:has(.iconoir-lock)',
         'div.radio:has(.iconoir-lock)'
     ].join(',')}`).forEach(it => it.remove());
     document.querySelectorAll('.tree__heading').forEach(it => {
