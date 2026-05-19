@@ -68,7 +68,122 @@
     <div id="iframeContainer"></div>
     <script id="_script">
 if(false){
+const _guidedToursToComplete = ['sidebar', 'database'];
+let _guidedTourCompletion = null;
+let _lastGuidedTourClick = 0;
+let _commentsSidebarUnregistered = false;
+
+function _getNuxtApp() {
+    return window.$nuxt && window.$nuxt.$store ? window.$nuxt : null;
+}
+
+function _getCompletedGuidedTours() {
+    const app = _getNuxtApp();
+    return app?.$store?.state?.auth?.user?.completed_guided_tours || [];
+}
+
+async function _markGuidedToursCompleted() {
+    const app = _getNuxtApp();
+    const store = app?.$store;
+    const user = store?.state?.auth?.user;
+    if (!app || !store || !user) {
+        return false;
+    }
+
+    const current = user.completed_guided_tours || [];
+    const completed_guided_tours = [...new Set([...current, ..._guidedToursToComplete])];
+    if (_guidedToursToComplete.every(it => current.includes(it))) {
+        return true;
+    }
+
+    if (!_guidedTourCompletion) {
+        _guidedTourCompletion = (async () => {
+            if (store.dispatch) {
+                await store.dispatch('auth/update', { completed_guided_tours });
+            } else if (app.$client?.patch) {
+                const { data } = await app.$client.patch('/user/account/', { completed_guided_tours });
+                store.dispatch?.('auth/forceUpdateUserData', { user: data });
+            } else if (store.state.auth.token) {
+                const response = await fetch('/api/user/account/', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `JWT ${store.state.auth.token}`
+                    },
+                    body: JSON.stringify({ completed_guided_tours })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    store.dispatch?.('auth/forceUpdateUserData', { user: data });
+                }
+            }
+        })().catch(() => null).finally(() => {
+            _guidedTourCompletion = null;
+        });
+    }
+
+    return false;
+}
+
+function _completeGuidedTours() {
+    _markGuidedToursCompleted();
+    if (_guidedToursToComplete.every(it => _getCompletedGuidedTours().includes(it))) {
+        return;
+    }
+
+    const step = document.querySelector('.guided-tour-step');
+    if (!step) {
+        return;
+    }
+
+    const now = Date.now();
+    if (now - _lastGuidedTourClick < 250) {
+        return;
+    }
+
+    const button = step.querySelector('.guided-tour-step__foot button, button');
+    if (button) {
+        _lastGuidedTourClick = now;
+        button.click();
+    }
+}
+
+function _normalizeText(text) {
+    return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function _hidePremiumCommentsSidebar() {
+    const app = _getNuxtApp();
+    try {
+        if (!_commentsSidebarUnregistered && app?.$registry?.exists?.('rowModalSidebar', 'comments')) {
+            app.$registry.unregister('rowModalSidebar', 'comments');
+            _commentsSidebarUnregistered = true;
+        }
+    } catch (e) {
+        // Ignore registry differences between Baserow versions.
+    }
+
+    document.querySelectorAll('.row-edit-modal-sidebar').forEach(sidebar => {
+        const tabs = [...sidebar.querySelectorAll('.tabs__header .tabs__item')];
+        const commentsTab = tabs.find(tab => {
+            const text = _normalizeText(tab.textContent);
+            return text.includes('commentaire') || text.includes('comment');
+        });
+        const historyTab = tabs.find(tab => {
+            const text = _normalizeText(tab.textContent);
+            return text.includes('historique') || text.includes('history');
+        });
+
+        if (commentsTab?.classList.contains('tabs__item--active') && historyTab) {
+            historyTab.click();
+        }
+        commentsTab?.remove();
+        sidebar.querySelectorAll('.row-comments').forEach(it => it.remove());
+    });
+}
+
 function _clean() {
+    _hidePremiumCommentsSidebar();
     document.querySelectorAll(`${[
         '.auth__logo',
         '.dashboard__footer',
@@ -96,8 +211,20 @@ function _clean() {
     });
 }
 _clean();
-const _observer = new MutationObserver(_clean);
+_completeGuidedTours();
+const _observer = new MutationObserver(() => {
+    _clean();
+    _completeGuidedTours();
+});
 _observer.observe(document.body, {subtree: true, childList: true});
+const _tourInterval = setInterval(() => {
+    _clean();
+    _completeGuidedTours();
+    const completed = _getCompletedGuidedTours();
+    if (!document.querySelector('.guided-tour-step') && _guidedToursToComplete.every(it => completed.includes(it))) {
+        clearInterval(_tourInterval);
+    }
+}, 250);
 }
     </script>
     <script>
