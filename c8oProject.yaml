@@ -1,10 +1,10 @@
 ↑convertigo: 8.0.0.m006
 ↓BaserowIntegration [core.Project]: 
-  comment: Mashup Sequencer project
+  comment: Allow NoCode Database integration inside the NoCode Studio
   contextTimeout: 59
   corsOrigin: =Origin
   httpSessionTimeout: 60
-  version: 0.0.21
+  version: 0.0.22
   ↓Baserow [connectors.HttpConnector-1728478461051]: 🗏 connectors/Baserow.yaml
   ↓CheckLogin [sequences.GenericSequence]: 🗏 sequences/CheckLogin.yaml
   ↓Cipher [sequences.GenericSequence-1728477305632]: 🗏 sequences/Cipher.yaml
