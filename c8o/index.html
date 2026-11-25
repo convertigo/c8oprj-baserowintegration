@@ -78,13 +78,17 @@
         });
 
         window.addEventListener('message', async event => {
-            let { token, script } = event.data;
+            if (event.source !== window.parent) {
+                return;
+            }
+            const { token } = event.data || {};
             if (!token) {
                 return;
             }
             const origin = event.origin;
+            let script;
             try {
-                script = `${await customizerScriptPromise}\n${script || ''}`;
+                script = await customizerScriptPromise;
             } catch (e) {
                 window.parent.postMessage({error: e.message}, origin);
                 return;
@@ -112,7 +116,7 @@
                 }
             }
             if (jwt_token) {
-                document.cookie = `jwt_token=${jwt_token}; path=/;${secure ?' Secure;':''} SameSite=${secure ? 'None' : 'Lax'};{sameOrigin ? '' : ' Partitioned;'}`;
+                document.cookie = `jwt_token=${jwt_token}; path=/;${secure ?' Secure;':''} SameSite=${secure ? 'None' : 'Lax'};${secure && !sameOrigin ? ' Partitioned;' : ''}`;
                 
                 const iframe = document.createElement('iframe');
                 iframe.src = "/dashboard/";

@@ -9,6 +9,7 @@ Mashup Sequencer project
 For more technical informations : [documentation](./project.md)
 
 - [Installation](#installation)
+- [Symbols](#symbols)
 - [Sequences](#sequences)
     - [CheckLogin](#checklogin)
     - [Cipher](#cipher)
@@ -39,6 +40,14 @@ For more technical informations : [documentation](./project.md)
      </td></tr>
     </table>
 3. Click the `Finish` button. This will automatically import the __BaserowIntegration__ project
+
+
+## Symbols
+
+Symbol | Value
+------ | ------
+BaserowIntegration.bridge.key.secret | Required. Key of the login bridge between C8Oforms and BaserowIntegration: 32 random bytes encoded in Base64 (44 characters, for example the output of `openssl rand -base64 32`). It must have the same value on the C8Oforms server, which signs the bridge tokens with it (C8Oforms reads the symbol of the same name).
+BaserowIntegration.bridge.acceptLegacy | Optional, default `false`. `true` also accepts the tokens of older C8Oforms versions, during an update of C8Oforms; set it back to `false` once every C8Oforms server is updated.
 
 
 ## Sequences

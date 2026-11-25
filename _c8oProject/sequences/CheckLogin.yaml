@@ -1,19 +1,24 @@
 accessibility: Hidden
 ↓Init [steps.SimpleStep-1728477159624]: 
   expression: |
-    'let bad = false;
+    'var bad = false;
+    // The accounts created here are never staff and always active.
+    var is_staff = false;
+    var is_active = true;
     try {
-    	const unciphered = com.twinsoft.convertigo.engine.util.Crypto2.decodeFromHexString(token);
-    	var {email, password, ts} = JSON.parse(unciphered);
-    	const now = new Date().getTime();
-    	email = email.toLowerCase();
-    	const search = email;
-    	const username = email;
-    	const name = email;
-    	
-    	bad = !email || !password || ts > (now + 5 * 60 * 1000) || ts < (now - 5 * 60 * 1000);
+        include("js/baserow_bridge_token.js");
+        var bridgeToken = String(token || "");
+        // the legacy token of older C8oForms is only accepted when the instance opts in, while they are updated
+        var claims = bridgeToken.indexOf("v2.") === 0
+            ? decodeBaserowBridgeToken(bridgeToken)
+            : decodeLegacyBaserowBridgeToken(bridgeToken, "${BaserowIntegration.bridge.acceptLegacy=false}" === "true");
+        var email = claims.email.toLowerCase();
+        var password = claims.password;
+        var search = email;
+        var username = email;
+        var name = email;
     } catch (e) {
-    	bad = true;
+        bad = true;
     }'
 ↓jIf [steps.IfStep-1728477560008]: 
   condition: bad

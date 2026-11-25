@@ -4,6 +4,7 @@ https: ${lib_baserow.https=true}
 port: ${lib_baserow.port=443}
 server: ${lib_baserow.server=baserow-backend.convertigo.net}
 ↓_api_admin_users__GET [transactions.JsonHttpTransaction]: 
+  accessibility: Private
   comment: |
     Returns all users with detailed information on each user, if the requesting user is staff. 
     
@@ -45,6 +46,7 @@ server: ${lib_baserow.server=baserow-backend.convertigo.net}
     description: sorts
     httpName: sorts
 ↓_api_settings__GET [transactions.JsonHttpTransaction]: 
+  accessibility: Private
   comment: Responds with all the admin configured settings.
   httpInfo: true
   httpParameters: 
@@ -67,6 +69,7 @@ server: ${lib_baserow.server=baserow-backend.convertigo.net}
               - ↑value: application/x-www-form-urlencoded
   subDir: /api/settings/
 ↓_api_settings_update__PATCH [transactions.JsonHttpTransaction]: 
+  accessibility: Private
   comment: Updates the admin configured settings if the user has admin permissions.
   customHttpVerb: PATCH
   httpInfo: true
@@ -93,6 +96,7 @@ server: ${lib_baserow.server=baserow-backend.convertigo.net}
   ↓allow_new_signups [variables.RequestableHttpVariable-1728480002874]: 
     httpMethod: POST
 ↓_api_user_token_auth__POST [transactions.JsonHttpTransaction]: 
+  accessibility: Private
   ↑default: true
   comment: Authenticates an existing user based on their username, which is their email address, and their password. If successful a JWT token will be generated that can be used to authorize for other endpoints that require authorization. The token will be valid for 60 minutes, so it has to be refreshed using the **token_refresh** endpoint before that time.
   httpInfo: true
