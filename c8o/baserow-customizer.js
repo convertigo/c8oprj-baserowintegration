@@ -1,5 +1,5 @@
 (() => {
-    const CUSTOMIZER_VERSION = '2026.05.28';
+    const CUSTOMIZER_VERSION = '2026.11.28';
     if (window.ConvertigoBaserowCustomizer?.started) {
         window.ConvertigoBaserowCustomizer.clean?.();
         return;
@@ -91,6 +91,74 @@
         return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
     }
 
+    function _ownText(element) {
+        return [...element.childNodes]
+            .filter(node => node.nodeType === Node.TEXT_NODE)
+            .map(node => node.textContent)
+            .join(' ');
+    }
+
+    // Containers of names typed by users: databases and tables (sidebar tree), views (views select,
+    // header), fields (grid headers), cells and rows. A text rule must never remove them, whatever
+    // the name contains.
+    const _userContentSelector = [
+        '[contenteditable]',
+        '.tree__link',
+        '.tree__sub-link',
+        '.tree__link-text',
+        '.side-bar-builder__link-text',
+        '.select__item-name-text',
+        '.header__filter-name',
+        '.grid-view__description-name',
+        '.grid-view__cell',
+        '.row-edit-modal',
+        '.row-expand-modal'
+    ].join(',');
+
+    function _isUserContent(element) {
+        return !!(element.closest(_userContentSelector) || element.querySelector(_userContentSelector));
+    }
+
+    // Full labels (normalized) of the Baserow actions to hide, in French and English.
+    const _hiddenLabels = [
+        "prompt pour l'ia",
+        'ai prompt',
+        'ia generative',
+        'generative ai',
+        "generer a l'aide de l'ia",
+        'generate using ai',
+        "generer une formule a l'aide de l'ia",
+        'generate formula using ai',
+        'se deconnecter',
+        'deconnexion',
+        'logout',
+        'log out',
+        'log off',
+        'sign out'
+    ];
+
+    // Sidebar headings of the application types that are hidden (builder and dashboard).
+    const _hiddenApplicationHeadings = [
+        'applications',
+        'application',
+        'tableaux de bord',
+        'tableau de bord',
+        'dashboards',
+        'dashboard'
+    ];
+
+    function _getGenerativeAITypes() {
+        try {
+            const types = Object.keys(_getNuxtApp()?.$registry?.registry?.generativeAIModel || {});
+            if (types.length) {
+                return types;
+            }
+        } catch (e) {
+            // Ignore registry differences between Baserow versions.
+        }
+        return ['openai', 'anthropic', 'mistral', 'ollama', 'openrouter'];
+    }
+
     function _hidePremiumCommentsSidebar() {
         const app = _getNuxtApp();
         try {
@@ -180,41 +248,36 @@
             '.form-view'
         ].join(',')}`).forEach(it => it.remove());
 
-        document.querySelectorAll('.create-application-context .context__menu-item').forEach(it => {
-            const text = _normalizeText(it.textContent);
-            if (text.includes('tableau de bord') || text.includes('dashboard') || text.includes('application')) {
+        // AI actions: Baserow marks every AI entry point with the magic wand icon.
+        document.querySelectorAll([
+            'a:has(> .iconoir-magic-wand)',
+            'button:has(.iconoir-magic-wand)',
+            '.context__menu-item:has(.iconoir-magic-wand)'
+        ].join(',')).forEach(it => it.remove());
+
+        // Generative AI provider choices (OpenAI, Ollama...) of the AI field form:
+        // matched on the dropdown item value, never on the displayed text.
+        const generativeAITypes = _getGenerativeAITypes();
+        document.querySelectorAll('.select__item').forEach(it => {
+            const value = it.__vue__?.value;
+            if (typeof value === 'string' && generativeAITypes.includes(value)) {
                 it.remove();
             }
         });
+
+        // Sidebar group headings hold application type names, never user names.
+        // Only the heading's own text is read, so a badge (Beta...) does not prevent the match.
         document.querySelectorAll('.tree__heading').forEach(it => {
-            const text = _normalizeText(it.textContent);
-            if (text.includes('applications') || text.includes('tableaux de bord') || text.includes('dashboards')) {
+            const text = _normalizeText(_ownText(it));
+            if (_hiddenApplicationHeadings.includes(text)) {
                 it.parentElement.remove();
             }
         });
+
+        // Last-resort match on Baserow's own labels, for versions that do not use the icons above.
+        // The whole label must match and user-named content is always skipped.
         document.querySelectorAll('a, button, .select__item, .context__menu-item').forEach(it => {
-            const text = _normalizeText(it.textContent);
-            if (
-                text.includes("prompt pour l'ia") ||
-                text.includes("modele d'ia") ||
-                text.includes("type d'ia") ||
-                text.includes('openai') ||
-                text.includes('ia generative') ||
-                text.includes("generer a l'aide de l'ia") ||
-                text.includes('generate using ai') ||
-                text.includes('generate formula using ai') ||
-                text.includes('ai prompt') ||
-                text.includes('formulaire') ||
-                text.includes('galerie') ||
-                text.includes('gallery') ||
-                text.includes('share form') ||
-                text.includes('share the form') ||
-                text.includes('se deconnecter') ||
-                text.includes('deconnexion') ||
-                text.includes('logout') ||
-                text.includes('log out') ||
-                text.includes('sign out')
-            ) {
+            if (_hiddenLabels.includes(_normalizeText(it.textContent)) && !_isUserContent(it)) {
                 it.remove();
             }
         });
@@ -278,11 +341,6 @@
             '.view-sharing__option:has(.iconoir-lock)',
             'div.radio:has(.iconoir-lock)'
         ].join(',')}`).forEach(it => it.remove());
-        document.querySelectorAll('.tree__heading').forEach(it => {
-            if (it.textContent.toLowerCase().includes('applications')) {
-                it.parentElement.remove();
-            }
-        });
     }
 
     function _start() {
